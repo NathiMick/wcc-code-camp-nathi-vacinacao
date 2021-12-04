@@ -33,7 +33,7 @@ const getUserById = async (req, res) => {
     try {
         Users.findById({_id: userID}, (err, result) => {
             if(err) {
-                return res.status(404).json({message: `Ususário não encontrado com o ID: ${userID}`});
+                return res.status(404).json({message: `Usuário não encontrado com o ID: ${userID}`});
             } else {
                 return res.status(200).json(result);
             }
@@ -64,7 +64,7 @@ const createUser = async (req, res) => {
     });
 
     if(!isNotNull(obj={name, cpf})) {
-        return res.status(404).json({ message: `Preencha corretamente as informações para cadastrar o Usuário!` });
+        return res.status(400).json({ message: `Preencha corretamente as informações para cadastrar o Usuário!` });
     } else {
         try {
             const userSearchByCPF = await Users.findOne({cpf});
@@ -119,7 +119,7 @@ const updateUser = async (req, res) => {
     try {
         if(!isNotNull(updateBody)) {
             // Verify if name and CPF informed at rquest body is not null or undefined or ""
-            return res.status(404).json({ message: `Preencha corretamente as informações para atualizar o Usuário!` });
+            return res.status(400).json({ message: `Preencha corretamente as informações para atualizar o Usuário!` });
         } else {
            Users.findOneAndUpdate({_id: userID, cpf: updateBody.cpf}, updateBody, {new: true}, (error, result) => {
             
@@ -152,7 +152,7 @@ const includeUserVaccines = async (req, res) => {
     if(!isNotNull(updateBody)) {
         // Verify if Vaccine ID was informed at request body and if it is not null or undefined or ""
 
-        return res.status(404).json({ message: `Preencha corretamente as informações para atualizar o Usuário!` });
+        return res.status(400).json({ message: `Preencha corretamente as informações para atualizar o Usuário!` });
     } else {
 
         Users.findOneAndUpdate({_id: userID}, update, {new: true}, (error, result) => {
@@ -178,7 +178,7 @@ const excludeUserVaccines = async (req, res) => {
     if(!isNotNull(updateBody)) {
         // Verify if Vaccine ID was informed at request body and if it is not null or undefined or ""
 
-        return res.status(404).json({ message: `Preencha corretamente as informações para atualizar o Usuário!` });
+        return res.status(400).json({ message: `Preencha corretamente as informações para atualizar o Usuário!` });
     } else {
 
         Users.findOne({_id: userID}, (error, result) => {

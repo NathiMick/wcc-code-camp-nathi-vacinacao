@@ -1,0 +1,588 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API REST NodeJS para controle de vacinação WCC",
+        "description": "Projeto desafio WCC Dasa para criação de um controle de vacinação",
+        "contact": {
+            "email": "nathi.mick@hotmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "server": [
+        {
+            "url": "http://localhost:8080/"
+        }
+    ],
+    "paths": {
+        "/users/newUser": {
+            "post": {
+                "summary": "Cadastro de Usuários",
+                "description": "Rota responsável por cadastro dos usuários no sistema",
+                "tags": ["users"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Users"
+                            },
+                            "examples": {
+                                "user": {
+                                    "value": {
+                                        "name": "Nathalia Pereira",
+                                        "cpf": "123.456.789-00",
+                                        "vaccines": ["idVaccine01"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "`Preencha corretamente as informações para cadastrar o Usuário!"
+                    },
+                    "409": {
+                        "description": "Usuário já cadastrado!"
+                    },
+                    "201": {
+                        "description": "Usuário criado com sucesso!"
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro durante o acesso ao Banco de Dados!"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "Retorna todos os usuários cadastrados",
+                "summary": "Retorna todos os usuários cadastrados no banco de dados",
+                "tags": ["users"],
+        
+                "responses": {
+                    "500": {
+                        "description": "Ocorreu um erro durante o acesso ao Banco de Dados"
+                    },
+                    "204": {
+                        "description": "Não existe nenhum usuário cadastrado"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Users"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "description": "Busca um usuário pelo Id utilizando o params (path)",
+                "summary": "Busca um usuário pelo Id utilizando o params (path)",
+                "tags": ["users"],
+                "parameters": [
+                    {
+                        "id": "id",
+                        "in": "path",
+                        "description": "Insira o ID de um usuário no params (path) para buscar",
+                        "required": true
+
+                    }
+                ],
+        
+                "responses": {
+                    "500": {
+                        "description": "Ocorreu um erro durante o acesso ao Banco de Dados."
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado com o ID informado"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Users"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/updateUser/{id}": {
+            "put": {
+                "description": "Atualizar usuário (apenas o nome e CPF), utilizando o params (path)",
+                "summary": "Atualizar usuário (apenas o nome e CPF), buscando pelo ID do usuário no params (path). IMPORTANTE: Cso o CPF não seja o mesmo do usuário já cadastrado, não será aceito",
+                "tags": ["users"],
+                "parameters": [
+                    {
+                        "id": "id",
+                        "in": "path",
+                        "description": "Insira o ID de um usuário no params (path) para buscar",
+                        "required": true
+
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Users"
+                            },
+                            "examples": {
+                                "user": {
+                                    "value": {
+                                        "name": "Nathalia Pereira",
+                                        "cpf": "123.456.789-00"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "500": {
+                        "description": "Ocorreu um erro durante o acesso ao Banco de Dados."
+                    },
+                    "400": {
+                        "description": "Preencha corretamente as informações para atualizar o Usuário!"
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado com o ID informado"
+                    },
+                    "200": {
+                        "description": "Usuário atualizado com sucesso!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Users"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/deleteUser/{id}": {
+            "delete": {
+                "description": "Deletar um usuário, buscando pelo ID e utilizando o params (path)",
+                "summary": "Deletar um usuário, buscando pelo ID e utilizando o params (path)",
+                "tags": ["users"],
+                "parameters": [
+                    {
+                        "id": "id",
+                        "in": "path",
+                        "description": "Insira o ID de um usuário no params (path) para buscar",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Usuário não encontrado com o ID informado"
+                    },
+                    "202": {
+                        "description": "Usuário deletado com sucesso!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Users"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/includeUserVaccines/{id}": {
+            "patch": {
+                "description": "Incluir vacina préviamente cadastrada no Banco de Dados de Vacina (Vaccines) no cadastro do usuário, utilizando o params (path) para encontrar o Usuário",
+                "summary": "Incluir vacina préviamente cadastrada no Banco de Dados de Vacina (Vaccines) no cadastro do usuário, utilizando o params (path) para encontrar o Usuário",
+                "tags": ["users"],
+                "parameters": [
+                    {
+                        "id": "id",
+                        "in": "path",
+                        "description": "Insira o ID de um usuário no params (path) para buscar",
+                        "required": true
+
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Users"
+                            },
+                            "examples": {
+                                "user": {
+                                    "value": {
+                                        "vaccines": ["61aa96991b9efdbab5889365"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "404": {
+                        "description": "Usuário ou Vaccina não encontrada com este Id"
+                    },
+                    "400": {
+                        "description": "Preencha corretamente as informações para atualizar o Usuário!"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Users"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/excludeUserVaccines/{id}": {
+            "delete": {
+                "description": "Excluir vacina préviamente cadastrada no Banco de Dados de Vacina (Vaccines) do cadastro do usuário, utilizando o params (path) para encontrar o Usuário",
+                "summary": "Excluir vacina préviamente cadastrada no Banco de Dados de Vacina (Vaccines) do cadastro do usuário, utilizando o params (path) para encontrar o Usuário",
+                "tags": ["users"],
+                "parameters": [
+                    {
+                        "id": "id",
+                        "in": "path",
+                        "description": "Insira o ID de um usuário no params (path) para buscar",
+                        "required": true
+
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Users"
+                            },
+                            "examples": {
+                                "user": {
+                                    "value": {
+                                        "vaccines": ["61aa96991b9efdbab5889365"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "404": {
+                        "description": "Usuário ou Vaccina não encontrada com este Id"
+                    },
+                    "400": {
+                        "description": "Preencha corretamente as informações para atualizar o Usuário!"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Users"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vaccines/": {
+            "post": {
+                "summary": "Cadastro de Vacinas existentes",
+                "description": "Rota responsável por cadastro dde vacinas disponíveis no Brasil",
+                "tags": ["vaccines"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Vaccines"
+                            },
+                            "examples": {
+                                "vaccines": {
+                                    "value": {
+                                        "name": "Varíola"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Preencha corretamente as informações para cadastrar a Vacina!"
+                    },
+                    "201": {
+                        "description": "Vacina cadastrada com sucesso!!"
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro durante o acesso ao Banco de Dados!"
+                    }
+                }
+            },
+            "get": {
+                "description": "Retorna todas as vacinas cadastradas no Banco de Dados",
+                "summary": "Retorna todas as vacinas cadastradas no Banco de Dados",
+                "tags": ["vaccines"],
+        
+                "responses": {
+                    "204": {
+                        "description": "Não existe nenhuma Vacina cadastrada!"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Vaccines"
+                                },
+                                "examples": {
+                                    "user": {
+                                        "vaccines": {
+                                            "_id": "61aad4db60cc39bcdee82820",
+                                            "name": "BCG",
+                                            "vaccinated": false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vaccines/{id}": {
+            "get": {
+                "description": "Busca uma vacina cadastrada pelo Id utilizando o params (path)",
+                "summary": "Busca uma vacina cadastrada pelo Id utilizando o params (path)",
+                "tags": ["vaccines"],
+                "parameters": [
+                    {
+                        "id": "id",
+                        "in": "path",
+                        "description": "Insira o ID de um usuário no params (path) para buscar",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "500": {
+                        "description": "Ocorreu um erro durante o acesso ao Banco de Dados."
+                    },
+                    "404": {
+                        "description": "Vacina não encontrado com o ID informado"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Vaccines"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Atualizar Vacina (apenas o Name e Expected date), utilizando o params ID (path) para encontrar a Vacina",
+                "summary": "Atualizar Vacina (apenas o Name e Expected date), utilizando o params ID (path) para encontrar a Vacina",
+                "tags": ["vaccines"],
+                "parameters": [
+                    {
+                        "id": "id",
+                        "in": "path",
+                        "description": "Insira o ID de um usuário no params (path) para buscar",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Vaccines"
+                            },
+                            "examples": {
+                                "vaccines": {
+                                    "value": {
+                                        "name": "Varíola",
+                                        "expected_date": "2022/02/12"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "500": {
+                        "description": "Ocorreu um erro durante o acesso ao Banco de Dados"
+                    },
+
+                    "400": {
+                        "description": "Preencha corretamente as informações para atualizar o Usuário!"
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado com o ID informado"
+                    },
+                    "200": {
+                        "description": "Vacina atualizada com sucesso!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Vaccines"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deleta uma vacina cadastrada pelo Id utilizando o params (path)",
+                "summary": "Deleta uma vacina cadastrada pelo Id utilizando o params (path)",
+                "tags": ["vaccines"],
+                "parameters": [
+                    {
+                        "id": "id",
+                        "in": "path",
+                        "description": "Insira o ID de um usuário no params (path) para buscar",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "500": {
+                        "description": "Ocorreu um erro durante o acesso ao Banco de Dados."
+                    },
+                    "404": {
+                        "description": "Vacina não encontrado com o ID informado"
+                    },
+                    "202": {
+                        "description": "Vacina depreciada e deletada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Vaccines"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vaccines/{id}/vaccinated": {
+            "patch": {
+                "description": "Atualiza o status da vacina, informando se o usuário está vacinado ou não, buscando pelo ID da vacina no params (path)",
+                "summary": "Atualiza o status da vacina, informando se o usuário está vacinado ou não, buscando pelo ID da vacina no params (path)",                
+                "tags": ["vaccines"],
+                "parameters": [
+                    {
+                        "id": "id",
+                        "in": "path",
+                        "description": "Insira o ID de um usuário no params (path) para buscar",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Vaccines"
+                            },
+                            "examples": {
+                                "vaccines": {
+                                    "value": {
+                                        "vaccinated": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "500": {
+                        "description": "Ocorreu um erro durante o acesso ao Banco de Dados."
+                    },
+                    "404": {
+                        "description": "Usuário ou Vaccina não encontrada com este Id"
+                    },
+                    "400": {
+                        "description": "Preencha corretamente as informações para atualizar o Usuário!"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Vaccines"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Users": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "cpf": {
+                        "type": "string"
+                    },
+                    "createdIn": {
+                        "type": "string"
+                    },
+                    "vaccines": {
+                        "type": "array",
+                        "description": "Array de Ids das Vacinas"
+                    }
+                }
+            },
+            "Vaccines": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "expected_date": {
+                        "type": "string"
+                    },
+                    "vaccinated": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        }
+    }
+
+}

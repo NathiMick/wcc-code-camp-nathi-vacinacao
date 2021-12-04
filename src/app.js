@@ -1,3 +1,5 @@
+const swaggerUI = require("swagger-ui-express");
+
 const express = require('express');
 const cors = require('cors');
 
@@ -5,6 +7,8 @@ const db = require('./data/database');
 const index = require('./routes/index');
 const usersRoutes = require('./routes/users.routes');
 const vaccinesRoutes = require('./routes/vaccines.routes');
+
+const swaggerDocs = require("./swagger.json");
 
 const app = express();
 
@@ -17,7 +21,7 @@ app
 .use('/', index)
 .use('/users',usersRoutes)
 .use('/vaccines', vaccinesRoutes)
-
+.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs))
 
 
 

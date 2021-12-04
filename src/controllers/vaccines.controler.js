@@ -36,7 +36,7 @@ const createVaccine = async (req, res) => {
     if(!isNotNull(obj={name})) {
         // Verify if request body was informed correctly.
         // Must informe at least Name of the Vaccine.
-        return res.status(404).json({ message: `Preencha corretamente as informações para cadastrar a Vacina!` });
+        return res.status(400).json({ message: `Preencha corretamente as informações para cadastrar a Vacina!` });
 
     } else {
 
@@ -79,7 +79,7 @@ const updateVaccine = async (req, res) => {
         if(!isNotNull(updateBody)) {
             // Verify if request body was informed correctly
 
-            return res.status(404).json({ message: `Preencha corretamente as informações para atualizar a Vacina!`});
+            return res.status(400).json({ message: `Preencha corretamente as informações para atualizar a Vacina!`});
         } else {
             Vaccines.findOneAndUpdate({_id: vaccineID}, updateBody, {new: true}, (error, result) => {
             
@@ -106,7 +106,7 @@ const vaccinatedOrNot = async (req, res) => {
 
     try {
         if(!isNotNull(updateBody)) {
-            return res.status(404).json({ message: `Preencha corretamente as informações para atualizar a Vacina!`});
+            return res.status(400).json({ message: `Preencha corretamente as informações para atualizar a Vacina!`});
         } else {
             Vaccines.findOneAndUpdate({_id: vaccineID}, updateBody, {new: true}, (error, result) => {
             
@@ -131,7 +131,7 @@ const getVaccineById = async (req, res) => {
     try {
         Vaccines.findById({_id: vaccineID}, (err, result) => {
             if(err) {
-                return res.status(404).json({message: `Ususário não encontrado com o ID: ${vaccineID}`});
+                return res.status(404).json({message: `Vacina não encontrado com o ID: ${vaccineID}`});
             } else {
                 return res.status(200).json(result);
             }
