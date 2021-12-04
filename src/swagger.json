@@ -10,7 +10,7 @@
     },
     "server": [
         {
-            "url": "http://localhost:8080/"
+            "url": "https://wcc-code-camp-nathi-vacinacao.herokuapp.com/"
         }
     ],
     "paths": {
